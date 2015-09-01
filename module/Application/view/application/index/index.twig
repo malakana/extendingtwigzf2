@@ -1,0 +1,34 @@
+{% extends 'layout/layout.twig' %}
+
+{% block content %}
+
+{% spaceless %}
+<div class="row">
+
+    <div class="container" >
+        <h1>Uso de Twig en Zend Framework 2</h1>
+        <p>Extendiendo funciones y filtros de twig en Zend Framework 2</p>
+    </div>
+
+    <div class="col-md-3">
+        <h3>Extensión de función</h3>
+        {{ htmlImagen('img/smiley.jpg') }}
+        <a href="http://www.freepik.es/fotos-vectores-gratis/icono">Vector de Icono diseñado por Freepik'</a>
+        
+    </div>
+
+    <div class="col-md-9">
+        <h3>Extensión de filtro</h3>
+        <p>{{ 'Formateando texto usando filtros en twig'|formatea }}</p>
+        <p>Estos números también</p>
+        <ul>
+        {% for numero in numeros %}
+            <li>{{ numero|formateaNumero }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+</div>
+{% endspaceless %}
+
+{% endblock content %}
