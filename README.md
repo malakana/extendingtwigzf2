@@ -1,4 +1,4 @@
-## Extendiendo Twig en ZendFramework 2
+## Extendiendo Twig en Zend Framework 2
 
 Descargamos una copia del [ZendSkeletonApplication](https://github.com/zendframework/ZendSkeletonApplication) y el modulo [ZfcTwig](https://github.com/ZF-Commons/ZfcTwig), configuramos nuestro composer.json de la siguiente manera y procedemos a instalarlo :
 ```
