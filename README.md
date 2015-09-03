@@ -1,118 +1,134 @@
-ZendSkeletonApplication
-=======================
+## Extendiendo Twig en ZendFramework 2
 
-Introduction
-------------
-This is a simple, skeleton application using the ZF2 MVC layer and module
-systems. This application is meant to be used as a starting place for those
-looking to get their feet wet with ZF2.
+Descargamos una copia del [ZendSkeletonApplication](https://github.com/zendframework/ZendSkeletonApplication) y el modulo [ZfcTwig](https://github.com/ZF-Commons/ZfcTwig), configuramos nuestro composer.json de la siguiente manera y procedemos a instalarlo :
+```
+{
+    "name": "zendframework/skeleton-application",
+    "description": "Skeleton Application for ZF2",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "framework",
+        "zf2"
+    ],
+    "homepage": "http://framework.zend.com/",
+    "require": {
+        "php": ">=5.5",
+        "zendframework/zendframework": "~2.5",
+        "zf-commons/zfc-twig": "dev-master"        
+    }
+}
+```
 
-Installation using Composer
----------------------------
+Desde el terminal ejecutamos:
+```
+composer.phar install
+```
 
-The easiest way to create a new ZF2 project is to use [Composer](https://getcomposer.org/). If you don't have it already installed, then please install as per the [documentation](https://getcomposer.org/doc/00-intro.md).
+Damos de alta el módulo **ZfcTwig** en el fichero application.config.php:
 
+```
+    'modules' => array(
+        'Application',
+        'ZfcTwig',        
+    ),
 
-Create your new ZF2 project:
+```
+Una vez tenemos nuestra copia de **ZendSkeletonApplication** con el modulo **Zfctwig** funcionando en nuestro servidor, vamos a proceder a crear nuestra clase para extender la funcionalidad de twig en nuestro proyecto web. Para ello creamos una carpeta llamada **Extension** dentro de nuestro modulo de trabajo, en este caso la ruta sería **Application\src\Application\Extension** . Dentro de esta carpeta procedemos a crear la clase que extenderá Twig a la que he llamado **MiExtensionTwig**, este es el código:
 
-    composer create-project -n -sdev zendframework/skeleton-application path/to/install
+```
+<?php
 
+namespace Application\Extension;
+ 
+use Twig_Extension;
+use Twig_SimpleFilter;
+use Twig_SimpleFunction;
+ 
+class MiExtensionTwig extends Twig_Extension
+{
 
-
-### Installation using a tarball with a local Composer
-
-If you don't have composer installed globally then another way to create a new ZF2 project is to download the tarball and install it:
-
-1. Download the [tarball](https://github.com/zendframework/ZendSkeletonApplication/tarball/master), extract it and then install the dependencies with a locally installed Composer:
-
-        cd my/project/dir
-        curl -#L https://github.com/zendframework/ZendSkeletonApplication/tarball/master | tar xz --strip-components=1
-    
-
-2. Download composer into your proejct directory and install the dependencies:
-
-        curl -s https://getcomposer.org/installer | php
-        php composer.phar install
-
-If you don't have access to curl, then install Composer into your project as per the [documentation](https://getcomposer.org/doc/00-intro.md).
-
-Web server setup
-----------------
-
-### PHP CLI server
-
-The simplest way to get started if you are using PHP 5.4 or above is to start the internal PHP cli-server in the root
-directory:
-
-    php -S 0.0.0.0:8080 -t public/ public/index.php
-
-This will start the cli-server on port 8080, and bind it to all network
-interfaces.
-
-**Note:** The built-in CLI server is *for development only*.
-
-### Vagrant server
-
-This project supports a basic [Vagrant](http://docs.vagrantup.com/v2/getting-started/index.html) configuration with an inline shell provisioner to run the Skeleton Application in a [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-
-1. Run vagrant up command
-
-    vagrant up
-
-2. Visit [http://localhost:8085](http://localhost:8085) in your browser
-
-Look in [Vagrantfile](Vagrantfile) for configuration details.
-
-### Apache setup
-
-To setup apache, setup a virtual host to point to the public/ directory of the
-project and you should be ready to go! It should look something like below:
-
-    <VirtualHost *:80>
-        ServerName zf2-app.localhost
-        DocumentRoot /path/to/zf2-app/public
-        <Directory /path/to/zf2-app/public>
-            DirectoryIndex index.php
-            AllowOverride All
-            Order allow,deny
-            Allow from all
-            <IfModule mod_authz_core.c>
-            Require all granted
-            </IfModule>
-        </Directory>
-    </VirtualHost>
-
-### Nginx setup
-
-To setup nginx, open your `/path/to/nginx/nginx.conf` and add an
-[include directive](http://nginx.org/en/docs/ngx_core_module.html#include) below
-into `http` block if it does not already exist:
-
-    http {
-        # ...
-        include sites-enabled/*.conf;
+    public function getName() {
+        return "MiExtensionTwig";
     }
 
+    public function getFunctions() {
 
-Create a virtual host configuration file for your project under `/path/to/nginx/sites-enabled/zf2-app.localhost.conf`
-it should look something like below:
+        return array(
+            new Twig_SimpleFunction('htmlImagen', [$this, 'getImagen']
+            , array(
+                'is_safe' => array(
+                    'html'
+                )
+            ))
 
-    server {
-        listen       80;
-        server_name  zf2-app.localhost;
-        root         /path/to/zf2-app/public;
+        );        
 
-        location / {
-            index index.php;
-            try_files $uri $uri/ @php;
-        }
-
-        location @php {
-            # Pass the PHP requests to FastCGI server (php-fpm) on 127.0.0.1:9000
-            fastcgi_pass   127.0.0.1:9000;
-            fastcgi_param  SCRIPT_FILENAME /path/to/zf2-app/public/index.php;
-            include fastcgi_params;
-        }
     }
 
-Restart the nginx, now you should be ready to go!
+    public function getFilters(){        
+
+        return array(
+            new Twig_SimpleFilter('formatea', [$this, 'formatea']),
+            new Twig_SimpleFilter('formateaNumero', [$this, 'formateaNumero']),
+
+        );
+
+    }
+
+    public function getImagen($imagen) {
+
+        $filename = basename($imagen);
+        return '<img src="' . $imagen . '" class="img-responsive" />';
+
+    }
+
+    public function formatea($texto){
+
+        return(ucfirst(strtolower($texto)));
+
+    }
+
+    public function formateaNumero($numero){
+
+        return(number_format( $numero , '2' , "," ,  "."));
+
+    }
+
+}
+```
+Como podemos ver la clase que acabamos de crear extiende la clase del módulo de twig **Twig_Extension**. Según sea el caso de la funcionalidad que queramos extender, usaremos una clase diferente, en este caso hacemos uso de las clases **Twig_SimpleFilter** y **Twig_SimpleFunction** puesto que queremos añadir funciones y filtros nuevos a nuestro proyecto. Para darlos de alta necesitamos hacer uso de las funciones **getFunctions** y **getFilters** en nuestra clase, cada una de estas funciones devuelve un array donde cada valor representa una funcionalidad concreta. En filtros hemos dado de alta dos filtros nuevos formatea y formateaNumero además de la funcion htmlImagen cada uno de estos tiene su propia funcion donde se detalla la lógica con la que opera. 
+
+Con nuestra clase ya creada, solo nos queda enlazar esta clase en nuestro proyecto a través del module.config.php.
+
+```
+    'zfctwig' => array(
+        'extensions' => array(
+            'Application\Extension\MiExtensionTwig',
+
+        )
+    )
+```
+Con todo configurado ya solo nos queda hacer uso en nuestras vistas de la nueva funcionalidad y listo.
+
+```
+<div class="row">
+
+    <div class="col-md-3">
+        <h3>Extensión de función</h3>
+        {{ htmlImagen('img/smiley.jpg') }}
+        
+    </div>
+
+    <div class="col-md-9">
+        <h3>Extensión de filtro</h3>
+        <p>{{ 'Formateando texto usando filtros en twig'|formatea }}</p>
+        <p>Estos números también</p>
+        <ul>
+        {% for numero in numeros %}
+            <li>{{ numero|formateaNumero }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+</div>
+```

@@ -99,7 +99,6 @@ return array(
             ),
         ),
     ),
-
     'zfctwig' => array(
         'extensions' => array(
             'Application\Extension\MiExtensionTwig',

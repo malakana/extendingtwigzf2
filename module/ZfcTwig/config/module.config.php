@@ -34,7 +34,6 @@ return array(
          */
         'extensions' => array(
             'zfctwig' => 'ZfcTwigExtension',
-            'miextensiontwig' => 'MiExtensionTwig'
         ),
 
         /**
