@@ -96,7 +96,7 @@ class MiExtensionTwig extends Twig_Extension
 
 }
 ```
-Como podemos ver la clase que acabamos de crear extiende la clase del módulo de twig **Twig_Extension**. Según sea el caso de la funcionalidad que queramos extender, usaremos una clase diferente, en este caso hacemos uso de las clases **Twig_SimpleFilter** y **Twig_SimpleFunction** puesto que queremos añadir funciones y filtros nuevos a nuestro proyecto. Para darlos de alta necesitamos hacer uso de las funciones **getFunctions** y **getFilters** en nuestra clase, cada una de estas funciones devuelve un array donde cada valor representa una funcionalidad concreta. En filtros hemos dado de alta dos filtros nuevos formatea y formateaNumero además de la funcion htmlImagen cada uno de estos tiene su propia funcion donde se detalla la lógica con la que opera. 
+Como podemos ver la clase que acabamos de crear extiende la clase del módulo de twig **Twig_Extension**. Según sea el caso de la funcionalidad que queramos extender, usaremos una clase diferente, en este caso hacemos uso de las clases **Twig_SimpleFilter** y **Twig_SimpleFunction** puesto que queremos añadir funciones y filtros nuevos a nuestro proyecto. Para darlos de alta necesitamos hacer uso de las funciones **getFunctions** y **getFilters** en nuestra clase, cada una de estas funciones devuelve un array donde cada valor representa una funcionalidad concreta. En filtros hemos dado de alta dos filtros nuevos 'formatea' y 'formateaNumero' además de la funcion 'htmlImagen' cada uno de estos tiene su propia funcion donde se detalla la lógica con la que opera. 
 
 Con nuestra clase ya creada, solo nos queda enlazar esta clase en nuestro proyecto a través del module.config.php.
 
